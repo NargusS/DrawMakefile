@@ -2,27 +2,48 @@ import csv
 import sys
 from xml.etree import ElementPath
 
-def	check_args_and_print(str, islast):
+def	choose_color(str):
 	if (str == "1"):
-		print("$(NOIR)  $(RESET)", end="");
+		return("$(NOIR)  ")
 	elif (str == "2"):
-		print("$(BLANC)  $(RESET)", end="");
+		return("$(BLANC)  ");
 	elif (str == "3"):
-		print("$(BLEU)  $(RESET)", end="");
+		return("$(BLEU)  ");
 	elif (str == "4"):
-		print("$(ROUGE)  $(RESET)", end="");
+		return("$(ROUGE)  ");
 	elif (str == "5"):
-		print("$(JAUNE)  $(RESET)", end="");
+		return("$(JAUNE)  ");
 	elif (str == "6"):
-		print("$(VERT)  $(RESET)", end="");
+		return("$(VERT)  ");
 	elif (str == "7"):
-		print("$(ROSE)  $(RESET)", end="");
+		return("$(ROSE)  ");
 	elif (str == "8"):
-		print("$(CYAN)  $(RESET)", end="");
+		return("$(CYAN)  ");
 	else:
-		print("  ", end="");
-	if (islast):
-		print("\\n\"");
+		return ("  ");
+
+def	do_line(elems):
+	str = "@printf \"";
+	last_color = "";
+	for	elem in range(0, len(elems)):
+		if(elem == len(elems) - 1):
+			if (elems[elem][:-2] == last_color):
+				str += "  $(RESET)";
+			else:
+				if (elem != 0):
+					str += "$(RESET)";
+				str += choose_color(elems[elem][:-2]);
+				str += "$(RESET)";
+			str += ("\\n\"");
+		elif (elems[elem] == last_color):
+			str += "  ";
+		else:
+			str += "$(RESET)";
+			str += choose_color(elems[elem]);
+		last_color = elems[elem];
+	print(str);
+
+			
 
 def	read_csv(filename):
 	with open(filename, newline='') as csvfile:
@@ -31,13 +52,8 @@ def	read_csv(filename):
 		for row in csvfile:
 			if (i == 26):
 				return;
-			print("@printf \"", end="");
 			elems = row.split(",");
-			for elem in elems:
-				if (elem == elems[-1]):
-					check_args_and_print(elem[:-2],True);
-				else:
-					check_args_and_print(elem,False);
+			do_line(elems);
 			i+=1;
 
 
