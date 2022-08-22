@@ -1,6 +1,8 @@
 import csv
 import sys
+import os
 from xml.etree import ElementPath
+import wget
 
 def	choose_color(str):
 	if (str == "1"):
@@ -41,21 +43,28 @@ def	do_line(elems):
 			str += "$(RESET)";
 			str += choose_color(elems[elem]);
 		last_color = elems[elem];
-	print(str);
+	print(str);		
 
-			
-
-def	read_csv(filename):
+def	read_csv(filename, ROW_MAX = 26):
 	with open(filename, newline='') as csvfile:
 		spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|');
 		i = 0;
 		for row in csvfile:
-			if (i == 26):
+			if (i == ROW_MAX):
 				return;
 			elems = row.split(",");
 			do_line(elems);
 			i+=1;
+	csvfile.close();
 
+def erase_csv(filename):
+	os.remove(filename);
+
+def	download_csv(link):
+	link = link[:-10] + "export?gid=0&format=csv";
+	file = wget.download(link, "tmp.csv", None);
 
 if __name__ == "__main__":
-	read_csv(sys.argv[1]);
+	download_csv(sys.argv[1]);
+	read_csv("tmp.csv", int(sys.argv[2]));
+	erase_csv("tmp.csv");
