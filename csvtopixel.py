@@ -21,6 +21,8 @@ def	choose_color(str):
 		return("$(ROSE)  ");
 	elif (str == "8"):
 		return("$(CYAN)  ");
+	elif (str == "8"):
+		return("$(GRIS)  ");
 	else:
 		return ("  ");
 
